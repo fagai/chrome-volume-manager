@@ -7,8 +7,9 @@
     "!*.map"
   ],
   "scripts": {
-    "build": "parcel build src/popup.html src/background.ts",
-    "watch": "parcel watch src/popup.html src/background.ts"
+    "build": "vite build --mode development --minify false",
+    "watch": "vite build --watch",
+    "preinstall": "typesync || :"
   },
   "repository": {
     "type": "git",
@@ -21,18 +22,17 @@
   },
   "homepage": "https://github.com/piousdeer/chrome-volume-manager#readme",
   "devDependencies": {
-    "@types/material-components-web": "^0.43.1",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.2.1",
-    "sass": "^1.23.2",
-    "tslint": "^5.20.0",
+    "sass": "^1.69.5",
+    "tslint": "^5.20.1",
     "tslint-config-standeerd": "^4.0.0",
-    "typescript": "^3.6.4"
+    "typescript": "^5.2.2",
+    "typesync": "^0.11.1",
+    "vite": "^4.4.5",
+    "vite-plugin-static-copy": "^0.17.0"
   },
   "dependencies": {
+    "@types/chrome": "^0.0.248",
     "chrome-extension-async": "^3.4.1",
-    "material-components-web": "^3.2.0"
+    "material-components-web": "^14.0.0"
   }
 }

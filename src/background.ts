@@ -1,6 +1,3 @@
-/// <reference path="../node_modules/chrome-extension-async/chrome-extension-async.d.ts" />
-import 'chrome-extension-async'
-
 import Message from './interfaces/Message'
 
 // Handle messages from popup
@@ -41,16 +38,25 @@ const tabs: { [tabId: number]: Promise<CapturedTab> } = {}
  */
 function captureTab (tabId: number) {
   tabs[tabId] = new Promise(async resolve => {
-    const stream = await chrome.tabCapture.capture({ audio: true, video: false })
+    await chrome.tabCapture.getMediaStreamId({
+      targetTabId: tabId
+    }, async (streamId) => {
 
-    const audioContext = new AudioContext()
-    const streamSource = audioContext.createMediaStreamSource(stream)
-    const gainNode = audioContext.createGain()
+      console.log(chrome.tabCapture, navigator)
+      // TODO navigator.mediaDevices.getUserMediaなどはbackgroundで取ってこれないので修正が必要
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {mandatory: {chromeMediaSource: 'tab', chromeMedia: streamId}}, 
+        video: false
+      })
+      const audioContext = new AudioContext()
+      const streamSource = audioContext.createMediaStreamSource(stream)
+      const gainNode = audioContext.createGain()
+  
+      streamSource.connect(gainNode)
+      gainNode.connect(audioContext.destination)
 
-    streamSource.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-
-    resolve({ audioContext, streamSource, gainNode })
+      resolve({ audioContext, streamSource, gainNode })
+    })
   })
 }
 
